@@ -1,0 +1,1301 @@
+{
+  "entities": {
+    "changeover_matrix": {
+      "fields": [
+        {
+          "allowed_values": null,
+          "name": "changeover_id",
+          "required": true,
+          "type": "string",
+          "unique": true,
+          "units": null,
+          "validation": "Unique machine/from-family/to-family key"
+        },
+        {
+          "allowed_values": null,
+          "name": "machine_id",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Machine foreign key"
+        },
+        {
+          "allowed_values": null,
+          "name": "from_family",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Previous product family"
+        },
+        {
+          "allowed_values": null,
+          "name": "to_family",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Next product family"
+        },
+        {
+          "allowed_values": null,
+          "name": "setup_min",
+          "required": true,
+          "type": "integer",
+          "unique": false,
+          "units": "minutes",
+          "validation": "Sequence-dependent setup duration in minutes"
+        },
+        {
+          "allowed_values": null,
+          "name": "effective_from_min",
+          "required": true,
+          "type": "integer",
+          "unique": false,
+          "units": "minutes from fixed epoch",
+          "validation": "Effective start minute"
+        }
+      ],
+      "primary_key": "changeover_id",
+      "unique_constraints": [
+        [
+          "machine_id",
+          "from_family",
+          "to_family",
+          "effective_from_min"
+        ]
+      ]
+    },
+    "inventory_lots": {
+      "fields": [
+        {
+          "allowed_values": null,
+          "name": "lot_id",
+          "required": true,
+          "type": "string",
+          "unique": true,
+          "units": null,
+          "validation": "LOT-001 style; unique"
+        },
+        {
+          "allowed_values": null,
+          "name": "material_id",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Material foreign key"
+        },
+        {
+          "allowed_values": null,
+          "name": "available_min",
+          "required": true,
+          "type": "integer",
+          "unique": false,
+          "units": "minutes from fixed epoch",
+          "validation": "Availability minute; may be delayed"
+        },
+        {
+          "allowed_values": null,
+          "name": "quantity",
+          "required": true,
+          "type": "number",
+          "unique": false,
+          "units": "material-specific units",
+          "validation": "Positive available quantity"
+        },
+        {
+          "allowed_values": [
+            "available",
+            "delayed",
+            "depleted"
+          ],
+          "name": "lifecycle_state",
+          "required": true,
+          "type": "enum",
+          "unique": false,
+          "units": null,
+          "validation": "available, delayed, depleted"
+        }
+      ],
+      "primary_key": "lot_id",
+      "unique_constraints": []
+    },
+    "machine_calendars": {
+      "fields": [
+        {
+          "allowed_values": null,
+          "name": "calendar_id",
+          "required": true,
+          "type": "string",
+          "unique": true,
+          "units": null,
+          "validation": "Unique machine/date/shift key"
+        },
+        {
+          "allowed_values": null,
+          "name": "machine_id",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Machine foreign key"
+        },
+        {
+          "allowed_values": null,
+          "name": "work_date",
+          "required": true,
+          "type": "integer",
+          "unique": false,
+          "units": "days from fixed epoch",
+          "validation": "Day offset from the fixed epoch"
+        },
+        {
+          "allowed_values": null,
+          "name": "shift_start_min",
+          "required": true,
+          "type": "integer",
+          "unique": false,
+          "units": "minutes from fixed epoch",
+          "validation": "Absolute minute from fixed epoch"
+        },
+        {
+          "allowed_values": null,
+          "name": "shift_end_min",
+          "required": true,
+          "type": "integer",
+          "unique": false,
+          "units": "minutes from fixed epoch",
+          "validation": "Exclusive absolute shift end"
+        },
+        {
+          "allowed_values": null,
+          "name": "capacity_min",
+          "required": true,
+          "type": "integer",
+          "unique": false,
+          "units": "minutes per shift",
+          "validation": "Shift capacity in minutes"
+        },
+        {
+          "allowed_values": [
+            "DAY"
+          ],
+          "name": "shift_code",
+          "required": true,
+          "type": "enum",
+          "unique": false,
+          "units": null,
+          "validation": "DAY"
+        }
+      ],
+      "primary_key": "calendar_id",
+      "unique_constraints": [
+        [
+          "machine_id",
+          "work_date",
+          "shift_code"
+        ]
+      ]
+    },
+    "machine_downtime_events": {
+      "fields": [
+        {
+          "allowed_values": null,
+          "name": "downtime_id",
+          "required": true,
+          "type": "string",
+          "unique": true,
+          "units": null,
+          "validation": "Unique immutable downtime event key"
+        },
+        {
+          "allowed_values": null,
+          "name": "machine_id",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Machine foreign key"
+        },
+        {
+          "allowed_values": null,
+          "name": "start_min",
+          "required": true,
+          "type": "integer",
+          "unique": false,
+          "units": "minutes from fixed epoch",
+          "validation": "Absolute downtime start"
+        },
+        {
+          "allowed_values": null,
+          "name": "end_min",
+          "required": true,
+          "type": "integer",
+          "unique": false,
+          "units": "minutes from fixed epoch",
+          "validation": "Exclusive downtime end"
+        },
+        {
+          "allowed_values": [
+            "maintenance",
+            "quality"
+          ],
+          "name": "reason",
+          "required": true,
+          "type": "enum",
+          "unique": false,
+          "units": null,
+          "validation": "maintenance, quality"
+        }
+      ],
+      "primary_key": "downtime_id",
+      "unique_constraints": []
+    },
+    "machine_eligibility": {
+      "fields": [
+        {
+          "allowed_values": null,
+          "name": "eligibility_id",
+          "required": true,
+          "type": "string",
+          "unique": true,
+          "units": null,
+          "validation": "Unique machine/step bridge key"
+        },
+        {
+          "allowed_values": null,
+          "name": "routing_step_id",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Routing-step foreign key"
+        },
+        {
+          "allowed_values": null,
+          "name": "machine_id",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Eligible machine foreign key"
+        }
+      ],
+      "primary_key": "eligibility_id",
+      "unique_constraints": [
+        [
+          "routing_step_id",
+          "machine_id"
+        ]
+      ]
+    },
+    "machines": {
+      "fields": [
+        {
+          "allowed_values": null,
+          "name": "machine_id",
+          "required": true,
+          "type": "string",
+          "unique": true,
+          "units": null,
+          "validation": "MACH-001 style; unique"
+        },
+        {
+          "allowed_values": null,
+          "name": "name",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Synthetic machine name"
+        },
+        {
+          "allowed_values": null,
+          "name": "capability",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Machine capability class"
+        },
+        {
+          "allowed_values": null,
+          "name": "active",
+          "required": true,
+          "type": "boolean",
+          "unique": false,
+          "units": null,
+          "validation": "Whether the machine is schedulable"
+        }
+      ],
+      "primary_key": "machine_id",
+      "unique_constraints": []
+    },
+    "material_consumption_events": {
+      "fields": [
+        {
+          "allowed_values": null,
+          "name": "consumption_event_id",
+          "required": true,
+          "type": "string",
+          "unique": true,
+          "units": null,
+          "validation": "Unique immutable consumption event key"
+        },
+        {
+          "allowed_values": null,
+          "name": "schedule_id",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Schedule version foreign key"
+        },
+        {
+          "allowed_values": null,
+          "name": "order_id",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Order foreign key"
+        },
+        {
+          "allowed_values": null,
+          "name": "material_id",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Material foreign key"
+        },
+        {
+          "allowed_values": null,
+          "name": "lot_id",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Inventory lot foreign key"
+        },
+        {
+          "allowed_values": null,
+          "name": "consumed_min",
+          "required": true,
+          "type": "integer",
+          "unique": false,
+          "units": "minutes from fixed epoch",
+          "validation": "Consumption event time"
+        },
+        {
+          "allowed_values": null,
+          "name": "quantity",
+          "required": true,
+          "type": "number",
+          "unique": false,
+          "units": "material-specific units",
+          "validation": "Consumed material quantity"
+        }
+      ],
+      "primary_key": "consumption_event_id",
+      "unique_constraints": []
+    },
+    "material_requirements": {
+      "fields": [
+        {
+          "allowed_values": null,
+          "name": "requirement_id",
+          "required": true,
+          "type": "string",
+          "unique": true,
+          "units": null,
+          "validation": "Unique order/material bridge key"
+        },
+        {
+          "allowed_values": null,
+          "name": "order_id",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Production order foreign key"
+        },
+        {
+          "allowed_values": null,
+          "name": "material_id",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Material foreign key"
+        },
+        {
+          "allowed_values": null,
+          "name": "lot_id",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Allocated inventory lot foreign key"
+        },
+        {
+          "allowed_values": null,
+          "name": "quantity",
+          "required": true,
+          "type": "number",
+          "unique": false,
+          "units": "material-specific units",
+          "validation": "Required material quantity"
+        }
+      ],
+      "primary_key": "requirement_id",
+      "unique_constraints": [
+        [
+          "order_id",
+          "material_id"
+        ]
+      ]
+    },
+    "materials": {
+      "fields": [
+        {
+          "allowed_values": null,
+          "name": "material_id",
+          "required": true,
+          "type": "string",
+          "unique": true,
+          "units": null,
+          "validation": "MAT-001 style; unique"
+        },
+        {
+          "allowed_values": null,
+          "name": "name",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Synthetic material name"
+        },
+        {
+          "allowed_values": [
+            "kg",
+            "ea",
+            "m"
+          ],
+          "name": "unit",
+          "required": true,
+          "type": "enum",
+          "unique": false,
+          "units": null,
+          "validation": "kg, ea, m"
+        },
+        {
+          "allowed_values": null,
+          "name": "active",
+          "required": true,
+          "type": "boolean",
+          "unique": false,
+          "units": null,
+          "validation": "Whether material can be consumed"
+        }
+      ],
+      "primary_key": "material_id",
+      "unique_constraints": []
+    },
+    "operation_schedules": {
+      "fields": [
+        {
+          "allowed_values": null,
+          "name": "schedule_line_id",
+          "required": true,
+          "type": "string",
+          "unique": true,
+          "units": null,
+          "validation": "Unique schedule-line key"
+        },
+        {
+          "allowed_values": null,
+          "name": "schedule_id",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "SCH-2026-000001 style; identifies a schedule version"
+        },
+        {
+          "allowed_values": null,
+          "name": "operation_id",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Operation foreign key"
+        },
+        {
+          "allowed_values": null,
+          "name": "machine_id",
+          "required": false,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Assigned machine foreign key; null only for infeasible operations"
+        },
+        {
+          "allowed_values": null,
+          "name": "start_min",
+          "required": false,
+          "type": "integer",
+          "unique": false,
+          "units": "minutes from fixed epoch",
+          "validation": "Processing start minute; null only for infeasible operations"
+        },
+        {
+          "allowed_values": null,
+          "name": "end_min",
+          "required": false,
+          "type": "integer",
+          "unique": false,
+          "units": "minutes from fixed epoch",
+          "validation": "Exclusive processing end minute; null only for infeasible operations"
+        },
+        {
+          "allowed_values": null,
+          "name": "setup_start_min",
+          "required": false,
+          "type": "integer",
+          "unique": false,
+          "units": "minutes from fixed epoch",
+          "validation": "Setup interval start minute; null only for infeasible operations"
+        },
+        {
+          "allowed_values": null,
+          "name": "setup_min",
+          "required": true,
+          "type": "integer",
+          "unique": false,
+          "units": "minutes",
+          "validation": "Applied setup duration"
+        },
+        {
+          "allowed_values": null,
+          "name": "tooling_id",
+          "required": false,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Assigned shared tooling foreign key"
+        },
+        {
+          "allowed_values": [
+            "scheduled",
+            "infeasible"
+          ],
+          "name": "status",
+          "required": true,
+          "type": "enum",
+          "unique": false,
+          "units": null,
+          "validation": "scheduled, infeasible"
+        },
+        {
+          "allowed_values": null,
+          "name": "infeasibility_reason",
+          "required": false,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Required when no feasible placement exists"
+        }
+      ],
+      "primary_key": "schedule_line_id",
+      "unique_constraints": []
+    },
+    "operations": {
+      "fields": [
+        {
+          "allowed_values": null,
+          "name": "operation_id",
+          "required": true,
+          "type": "string",
+          "unique": true,
+          "units": null,
+          "validation": "OP-<order-id>-01 style; unique"
+        },
+        {
+          "allowed_values": null,
+          "name": "order_id",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Production order foreign key"
+        },
+        {
+          "allowed_values": null,
+          "name": "routing_step_id",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Routing-step foreign key"
+        },
+        {
+          "allowed_values": null,
+          "name": "step_no",
+          "required": true,
+          "type": "integer",
+          "unique": false,
+          "units": null,
+          "validation": "One-based precedence position"
+        },
+        {
+          "allowed_values": null,
+          "name": "duration_min",
+          "required": true,
+          "type": "integer",
+          "unique": false,
+          "units": "minutes",
+          "validation": "Processing duration in minutes"
+        },
+        {
+          "allowed_values": null,
+          "name": "predecessor_operation_id",
+          "required": false,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Previous operation in the same order"
+        },
+        {
+          "allowed_values": null,
+          "name": "tooling_group",
+          "required": false,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Required shared tooling group"
+        }
+      ],
+      "primary_key": "operation_id",
+      "unique_constraints": []
+    },
+    "order_status_events": {
+      "fields": [
+        {
+          "allowed_values": null,
+          "name": "order_status_event_id",
+          "required": true,
+          "type": "string",
+          "unique": true,
+          "units": null,
+          "validation": "Unique immutable order status event key"
+        },
+        {
+          "allowed_values": null,
+          "name": "order_id",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Production order foreign key"
+        },
+        {
+          "allowed_values": [
+            "released",
+            "scheduled",
+            "completed",
+            "infeasible"
+          ],
+          "name": "old_state",
+          "required": false,
+          "type": "enum",
+          "unique": false,
+          "units": null,
+          "validation": "Null for initial state"
+        },
+        {
+          "allowed_values": [
+            "released",
+            "scheduled",
+            "completed",
+            "infeasible"
+          ],
+          "name": "new_state",
+          "required": true,
+          "type": "enum",
+          "unique": false,
+          "units": null,
+          "validation": "released, scheduled, completed, infeasible"
+        },
+        {
+          "allowed_values": null,
+          "name": "event_min",
+          "required": true,
+          "type": "integer",
+          "unique": false,
+          "units": "minutes from fixed epoch",
+          "validation": "Event time from fixed epoch"
+        }
+      ],
+      "primary_key": "order_status_event_id",
+      "unique_constraints": []
+    },
+    "product_bom": {
+      "fields": [
+        {
+          "allowed_values": null,
+          "name": "bom_line_id",
+          "required": true,
+          "type": "string",
+          "unique": true,
+          "units": null,
+          "validation": "Unique bill-of-material bridge key"
+        },
+        {
+          "allowed_values": null,
+          "name": "sku",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Product foreign key"
+        },
+        {
+          "allowed_values": null,
+          "name": "material_id",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Material foreign key"
+        },
+        {
+          "allowed_values": null,
+          "name": "quantity_per_unit",
+          "required": true,
+          "type": "number",
+          "unique": false,
+          "units": "material-specific units per finished product unit",
+          "validation": "Material units required per product unit"
+        },
+        {
+          "allowed_values": null,
+          "name": "effective_from_min",
+          "required": true,
+          "type": "integer",
+          "unique": false,
+          "units": "minutes from fixed epoch",
+          "validation": "Effective start minute"
+        },
+        {
+          "allowed_values": null,
+          "name": "effective_to_min",
+          "required": false,
+          "type": "integer",
+          "unique": false,
+          "units": "minutes from fixed epoch",
+          "validation": "Exclusive end; null means current"
+        }
+      ],
+      "primary_key": "bom_line_id",
+      "unique_constraints": [
+        [
+          "sku",
+          "material_id"
+        ]
+      ]
+    },
+    "production_orders": {
+      "fields": [
+        {
+          "allowed_values": null,
+          "name": "order_id",
+          "required": true,
+          "type": "string",
+          "unique": true,
+          "units": null,
+          "validation": "PROD-2026-000001 style; immutable order key"
+        },
+        {
+          "allowed_values": null,
+          "name": "sku",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Product foreign key"
+        },
+        {
+          "allowed_values": null,
+          "name": "routing_id",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Effective routing foreign key"
+        },
+        {
+          "allowed_values": null,
+          "name": "quantity",
+          "required": true,
+          "type": "integer",
+          "unique": false,
+          "units": "material-specific units",
+          "validation": "Positive units"
+        },
+        {
+          "allowed_values": null,
+          "name": "release_min",
+          "required": true,
+          "type": "integer",
+          "unique": false,
+          "units": "minutes from fixed epoch",
+          "validation": "Release minute from fixed epoch"
+        },
+        {
+          "allowed_values": null,
+          "name": "due_min",
+          "required": true,
+          "type": "integer",
+          "unique": false,
+          "units": "minutes from fixed epoch",
+          "validation": "Due minute from fixed epoch"
+        },
+        {
+          "allowed_values": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "name": "priority",
+          "required": true,
+          "type": "integer",
+          "unique": false,
+          "units": null,
+          "validation": "1 (lowest) through 5 (highest)"
+        },
+        {
+          "allowed_values": null,
+          "name": "urgent",
+          "required": true,
+          "type": "boolean",
+          "unique": false,
+          "units": null,
+          "validation": "Urgent dispatch indicator"
+        },
+        {
+          "allowed_values": [
+            "released",
+            "scheduled",
+            "completed",
+            "infeasible"
+          ],
+          "name": "lifecycle_state",
+          "required": true,
+          "type": "enum",
+          "unique": false,
+          "units": null,
+          "validation": "released, scheduled, completed, infeasible"
+        }
+      ],
+      "primary_key": "order_id",
+      "unique_constraints": []
+    },
+    "products": {
+      "fields": [
+        {
+          "allowed_values": null,
+          "name": "sku",
+          "required": true,
+          "type": "string",
+          "unique": true,
+          "units": null,
+          "validation": "PROD-2026-000001 style; unique product key"
+        },
+        {
+          "allowed_values": null,
+          "name": "name",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Synthetic product name"
+        },
+        {
+          "allowed_values": null,
+          "name": "family",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "FAM-01 through FAM-10"
+        },
+        {
+          "allowed_values": null,
+          "name": "active",
+          "required": true,
+          "type": "boolean",
+          "unique": false,
+          "units": null,
+          "validation": "Whether this product can be ordered"
+        }
+      ],
+      "primary_key": "sku",
+      "unique_constraints": []
+    },
+    "routing_steps": {
+      "fields": [
+        {
+          "allowed_values": null,
+          "name": "routing_step_id",
+          "required": true,
+          "type": "string",
+          "unique": true,
+          "units": null,
+          "validation": "Unique routing-step bridge key"
+        },
+        {
+          "allowed_values": null,
+          "name": "routing_id",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Routing foreign key"
+        },
+        {
+          "allowed_values": null,
+          "name": "step_no",
+          "required": true,
+          "type": "integer",
+          "unique": false,
+          "units": null,
+          "validation": "One-based operation order; unique within routing"
+        },
+        {
+          "allowed_values": null,
+          "name": "duration_min",
+          "required": true,
+          "type": "integer",
+          "unique": false,
+          "units": "minutes",
+          "validation": "Processing duration in minutes"
+        },
+        {
+          "allowed_values": null,
+          "name": "tooling_group",
+          "required": false,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Shared tooling group required by the step"
+        }
+      ],
+      "primary_key": "routing_step_id",
+      "unique_constraints": [
+        [
+          "routing_id",
+          "step_no"
+        ]
+      ]
+    },
+    "routings": {
+      "fields": [
+        {
+          "allowed_values": null,
+          "name": "routing_id",
+          "required": true,
+          "type": "string",
+          "unique": true,
+          "units": null,
+          "validation": "ROUTE-<sku>-01; unique"
+        },
+        {
+          "allowed_values": null,
+          "name": "sku",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Product foreign key; many routings may belong to a product"
+        },
+        {
+          "allowed_values": null,
+          "name": "revision",
+          "required": true,
+          "type": "integer",
+          "unique": false,
+          "units": null,
+          "validation": "Positive immutable revision"
+        },
+        {
+          "allowed_values": null,
+          "name": "effective_from_min",
+          "required": true,
+          "type": "integer",
+          "unique": false,
+          "units": "minutes from fixed epoch",
+          "validation": "Minutes from 2026-01-01T00:00Z"
+        },
+        {
+          "allowed_values": null,
+          "name": "effective_to_min",
+          "required": false,
+          "type": "integer",
+          "unique": false,
+          "units": "minutes from fixed epoch",
+          "validation": "Exclusive end; null means currently effective"
+        },
+        {
+          "allowed_values": [
+            "draft",
+            "active",
+            "retired"
+          ],
+          "name": "lifecycle_state",
+          "required": true,
+          "type": "enum",
+          "unique": false,
+          "units": null,
+          "validation": "draft, active, retired"
+        }
+      ],
+      "primary_key": "routing_id",
+      "unique_constraints": []
+    },
+    "schedule_events": {
+      "fields": [
+        {
+          "allowed_values": null,
+          "name": "schedule_event_id",
+          "required": true,
+          "type": "string",
+          "unique": true,
+          "units": null,
+          "validation": "Unique immutable schedule event key"
+        },
+        {
+          "allowed_values": null,
+          "name": "schedule_id",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Schedule version"
+        },
+        {
+          "allowed_values": [
+            "created",
+            "rescheduled",
+            "violated"
+          ],
+          "name": "event_type",
+          "required": true,
+          "type": "enum",
+          "unique": false,
+          "units": null,
+          "validation": "created, rescheduled, violated"
+        },
+        {
+          "allowed_values": null,
+          "name": "event_min",
+          "required": true,
+          "type": "integer",
+          "unique": false,
+          "units": "minutes from fixed epoch",
+          "validation": "Event time from fixed epoch"
+        },
+        {
+          "allowed_values": null,
+          "name": "entity_id",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Affected order, operation, or schedule ID"
+        },
+        {
+          "allowed_values": null,
+          "name": "details",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Traceability details"
+        }
+      ],
+      "primary_key": "schedule_event_id",
+      "unique_constraints": []
+    },
+    "tooling": {
+      "fields": [
+        {
+          "allowed_values": null,
+          "name": "tooling_id",
+          "required": true,
+          "type": "string",
+          "unique": true,
+          "units": null,
+          "validation": "TOOL-001 style; unique shared resource"
+        },
+        {
+          "allowed_values": null,
+          "name": "tooling_group",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Group of compatible routing requirements"
+        }
+      ],
+      "primary_key": "tooling_id",
+      "unique_constraints": []
+    },
+    "tooling_assignments": {
+      "fields": [
+        {
+          "allowed_values": null,
+          "name": "tooling_assignment_id",
+          "required": true,
+          "type": "string",
+          "unique": true,
+          "units": null,
+          "validation": "Unique tooling/routing-step bridge key"
+        },
+        {
+          "allowed_values": null,
+          "name": "routing_step_id",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Routing-step foreign key"
+        },
+        {
+          "allowed_values": null,
+          "name": "tooling_id",
+          "required": true,
+          "type": "string",
+          "unique": false,
+          "units": null,
+          "validation": "Shared tooling foreign key"
+        }
+      ],
+      "primary_key": "tooling_assignment_id",
+      "unique_constraints": [
+        [
+          "routing_step_id",
+          "tooling_id"
+        ]
+      ]
+    }
+  },
+  "epoch": "2026-01-01T00:00:00Z",
+  "lifecycle_states": {
+    "inventory_lot": [
+      "available",
+      "delayed",
+      "depleted"
+    ],
+    "operation_schedule": [
+      "scheduled",
+      "infeasible"
+    ],
+    "production_order": [
+      "released",
+      "scheduled",
+      "completed",
+      "infeasible"
+    ],
+    "routing": [
+      "draft",
+      "active",
+      "retired"
+    ]
+  },
+  "relationships": [
+    {
+      "cardinality": "1:N",
+      "from": "products",
+      "optional": false,
+      "to": "routings"
+    },
+    {
+      "cardinality": "1:N",
+      "from": "routings",
+      "optional": false,
+      "to": "routing_steps"
+    },
+    {
+      "cardinality": "N:M via machine_eligibility",
+      "from": "routing_steps",
+      "optional": false,
+      "to": "machines"
+    },
+    {
+      "cardinality": "N:M via product_bom",
+      "from": "products",
+      "optional": false,
+      "to": "materials"
+    },
+    {
+      "cardinality": "N:M via tooling_assignments",
+      "from": "routing_steps",
+      "optional": true,
+      "to": "tooling"
+    },
+    {
+      "cardinality": "1:N",
+      "from": "production_orders",
+      "optional": false,
+      "to": "operations"
+    },
+    {
+      "cardinality": "1:N",
+      "from": "machines",
+      "optional": false,
+      "to": "machine_calendars"
+    },
+    {
+      "cardinality": "1:N",
+      "from": "materials",
+      "optional": false,
+      "to": "inventory_lots"
+    },
+    {
+      "cardinality": "1:N",
+      "from": "production_orders",
+      "optional": false,
+      "to": "material_requirements"
+    },
+    {
+      "cardinality": "1:N",
+      "from": "machines",
+      "optional": false,
+      "to": "changeover_matrix"
+    },
+    {
+      "cardinality": "1:N",
+      "from": "machines",
+      "optional": true,
+      "to": "machine_downtime_events"
+    },
+    {
+      "cardinality": "1:N across schedule versions",
+      "from": "operations",
+      "optional": false,
+      "to": "operation_schedules"
+    },
+    {
+      "cardinality": "1:N event history",
+      "from": "production_orders",
+      "optional": false,
+      "to": "order_status_events"
+    }
+  ],
+  "time_unit": "integer minutes from epoch; intervals are half-open [start, end)"
+}

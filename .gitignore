@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.py[cod]
+.env
+data/clean/*
+data/mutated/*
+data/ground_truth/*
+!data/clean/.gitkeep
+!data/mutated/.gitkeep
+!data/ground_truth/.gitkeep

@@ -1,0 +1,8 @@
+pydantic>=2.6,<3
+fastapi>=0.110
+uvicorn[standard]>=0.27
+streamlit>=1.49
+pandas>=2.2
+plotly>=5.20
+pytest>=8.0
+requests>=2.31

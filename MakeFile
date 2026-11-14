@@ -1,0 +1,19 @@
+.PHONY: install test generate reproduce serve ui
+
+install:
+	python -m pip install -r requirements.txt
+
+test:
+	python -m pytest -q
+
+generate:
+	python -m src.cli generate --seed 20261022
+
+reproduce:
+	python -m src.cli generate --seed 20261022 --verify-reproducibility
+
+serve:
+	python -m src.cli serve --data data
+
+ui:
+	python -m streamlit run ui/app.py
